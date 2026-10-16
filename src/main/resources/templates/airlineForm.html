@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Evaluación de Vuelo - Aerolínea</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, select { width: 300px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #5cb85c; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; }
+        .card { border: 1px solid #ddd; padding: 20px; border-radius: 6px; width: 400px; margin-top: 20px; }
+        .success { color: #5cb85c; font-weight: bold; }
+        .warning { color: #d9534f; font-weight: bold; }
+        ul { padding-left: 20px; }
+    </style>
+</head>
+<body>
+
+<h2>Evaluación de Reglas de Aerolínea</h2>
+
+<!-- FORMULARIO DE ENTRADA -->
+<form th:action="@{/airline/form}" th:object="${airlineRequest}" method="post">
+
+    <h3>Datos del Pasajero</h3>
+    <div class="form-group">
+        <label>ID Pasajero:</label>
+        <input type="text" th:field="*{passenger.passengerId}" required />
+    </div>
+    <div class="form-group">
+        <label>Nombre Completo:</label>
+        <input type="text" th:field="*{passenger.name}" required />
+    </div>
+    <div class="form-group">
+        <label>Edad:</label>
+        <input type="number" th:field="*{passenger.age}" required />
+    </div>
+    <div class="form-group">
+        <label>Estatus / Membresía:</label>
+        <select th:field="*{passenger.status}">
+            <option value="Basic">Basic</option>
+            <option value="Gold">Gold</option>
+            <option value="Platinum">Platinum</option>
+        </select>
+    </div>
+
+    <h3>Datos del Vuelo</h3>
+    <div class="form-group">
+        <label>Número de Vuelo:</label>
+        <input type="text" th:field="*{flight.flightNumber}" required />
+    </div>
+    <div class="form-group">
+        <label>Minutos de Retraso:</label>
+        <input type="number" th:field="*{flight.delayMinutes}" required />
+    </div>
+    <div class="form-group">
+        <label>Duración (Horas):</label>
+        <input type="number" step="0.1" th:field="*{flight.durationHours}" required />
+    </div>
+
+    <h3>Datos del Equipaje</h3>
+    <div class="form-group">
+        <label>Peso Equipaje (kg):</label>
+        <input type="number" step="0.1" th:field="*{luggage.weightKg}" required />
+    </div>
+
+    <button type="submit">Evaluar Reglas</button>
+</form>
+
+<!-- RESULTADO DE LA EVALUACIÓN -->
+<div class="card" th:if="${result != null}">
+    <h2>Resultado de la Evaluación</h2>
+
+    <p><strong>Pasajero:</strong> <span th:text="${result.name}"></span></p>
+    <p><strong>Clase de Cabina:</strong> <span th:text="${result.cabinClass != null ? result.cabinClass : 'Economy'}"></span></p>
+    <p><strong>Puntos de Lealtad:</strong> <span th:text="${result.loyaltyPoints}"></span></p>
+    <p><strong>Compensación por Retraso:</strong> $<span th:text="${result.compensationAmount}"></span></p>
+    <p><strong>Acceso a Salón VIP:</strong>
+        <span th:class="${result.vipLoungeAccess ? 'success' : 'warning'}"
+              th:text="${result.vipLoungeAccess ? 'Otorgado' : 'No Otorgado'}"></span>
+    </p>
+
+    <h3>Beneficios y Acciones Aplicadas por Drools:</h3>
+    <ul>
+        <li th:each="note : ${result.notes}" th:text="${note}"></li>
+    </ul>
+
+    <a th:href="@{/airline/form}">Volver a evaluar</a>
+</div>
+
+</body>
+</html>

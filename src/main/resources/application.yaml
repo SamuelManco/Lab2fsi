@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: labdrools
+  ai:
+    openai:
+      api-key: openai.api.key=YOUR_API_KEY_HERE
+      chat:
+        options:
+          model: gpt-4o-mini
+
+
